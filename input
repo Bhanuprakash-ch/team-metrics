@@ -1,0 +1,20 @@
+[
+  {
+    "name": "gearpump",
+    "repos": [
+      {
+        "name": "/repos/intel-hadoop/gearpump",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "oryx",
+    "repos": [
+      {
+        "name": "/repos/OryxProject/oryx",
+        "branch": "master"
+      }
+    ]
+  }
+]
