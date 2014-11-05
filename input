@@ -9,6 +9,15 @@
     ]
   },
   {
+    "name": "Hive",
+    "repos": [
+      {
+        "name": "/repos/apache/hive",
+        "branch": "master"
+      }
+    ]
+  },
+  {
     "name": "oryx",
     "repos": [
       {
