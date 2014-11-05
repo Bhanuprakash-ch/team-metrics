@@ -36,6 +36,15 @@
     ]
   },
   {
+    "name": "storm",
+    "repos": [
+      {
+        "name": "/repos/apache/storm",
+        "branch": "master"
+      }
+    ]
+  },
+  {
     "name": "Tachyon ",
     "repos": [
       {

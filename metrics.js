@@ -25,7 +25,7 @@ function gitapi(uri, cb) {
       var info = JSON.parse(body);
       cb(info);
     } else {
-      console.log('statusCode='+response.statusCode+' error='+error);
+      console.log('uri='+uri+' statusCode='+response.statusCode+' error='+error);
     }
   }
   request(options, callback);
