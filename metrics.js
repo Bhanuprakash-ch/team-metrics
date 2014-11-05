@@ -54,7 +54,7 @@ Metrics = (function() {
     this.team = team;
     this.members = {};
     this.repo = null;
-    this.timeRange = [];
+    this.timeRange = Array(2);
     this.generateReport = this.generateReport.bind(this);
     this.issuesCallback = this.issuesCallback.bind(this);
     this.membersCallback = this.membersCallback.bind(this);
@@ -88,7 +88,6 @@ Metrics = (function() {
           self.totals.issuescreated++;
         }
       }
-//console.log(issue);
     });
     this.generateReport()
   }
@@ -123,11 +122,12 @@ Metrics = (function() {
         }
       }
     });
+    isNaN(this.timeRange[0]) ||
     getIssues(this.repo.name,new Date(this.timeRange[0]).toISOString(),this.issuesCallback);
   }
 
   Metrics.prototype.statsCallback = function (stats) {
-    var self = this;
+    var self = this, firsttime = true;
     self.totals = {commits:0,issuescreated:0,pullrequests:0,additions:0,deletions:0};
     stats.forEach(function(stat) {
       var member = stat.author.login
@@ -135,8 +135,8 @@ Metrics = (function() {
         var weeks = stat.weeks.slice(-2)
         weeks.forEach(function(aweek,i) {
           var time = parseInt(aweek.w+'000');
-          if(i===0) {
-            self.timeRange.push(time);
+          if(firsttime) {
+            self.timeRange[i] = time;
           }
           self.members[member].weeks[i].date.setTime(time);
           self.members[member].weeks[i].commits = parseInt(aweek.c);
@@ -146,6 +146,7 @@ Metrics = (function() {
           self.totals.additions += self.members[member].weeks[i].additions;
           self.totals.deletions += self.members[member].weeks[i].deletions;
         });
+        firsttime = false;
       }
     });
     getPullRequests(this.repo.name,this.repo.branch,this.pullRequestCallback)
