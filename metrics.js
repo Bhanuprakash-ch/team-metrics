@@ -1,6 +1,7 @@
 #!/usr/local/bin/node
 /*
 curl -i https://api.github.com/orgs/intel-hadoop/members
+curl -i https://api.github.com/orgs/intel-hadoop/teams
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/issues?since=2014-10-16&state=open'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/commits?since=2014-10-16&until=2014-10-31'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/pulls?state=closed&direction=asc'
