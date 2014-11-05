@@ -25,5 +25,14 @@
         "branch": "master"
       }
     ]
+  },
+  {
+    "name": "Tachyon",
+    "repos": [
+      {
+        "name": "/repos/amplab/tachyon",
+        "branch": "master"
+      }
+    ]
   }
 ]
