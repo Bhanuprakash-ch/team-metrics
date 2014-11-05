@@ -29,19 +29,111 @@ function gitapi(uri, cb) {
   request(options, callback);
 }
 
-Metrics = (function() {
-  function Metrics(team, org, repo) {
-    this.team = team;
-    this.org = org;
-    this.repo = repo
+MetricsInput = (function() {
+  function MetricsInput() {
+    this.input = null;
+    this.inputCallback = this.inputCallback.bind(this);
+    getInput('/repos/intel-hadoop/team-metrics','master','/input', this.inputCallback);
   }
 
-  Metrics.prototype.addMembers = function (members) {
-    this.members = members;
+  MetricsInput.prototype.inputCallback = function (data) {
+    this.input = JSON.parse(data);
+    var self = this;
+    this.input.forEach(function(team) {
+      new Metrics(team)
+    });
   }
+
+  return MetricsInput;
+})();
+
+Metrics = (function() {
+  function Metrics(team) {
+    this.team = team;
+    this.members = {};
+    this.repo = null;
+    this.timeRange = [];
+    this.membersCallback = this.membersCallback.bind(this);
+    this.pullRequestCallback = this.pullRequestCallback.bind(this);
+    this.statsCallback = this.statsCallback.bind(this);
+    this.teamCallback = this.teamCallback.bind(this);
+    getTeam(this.team.name, this.teamCallback);
+  }
+
+  Metrics.prototype.membersCallback = function (membersArray) {
+    var self = this;
+    membersArray.forEach(function(member) {
+      self.members[member.login] = {}
+    });
+    this.team.repos.forEach(function(repo) {
+      self.repo = repo;
+      getStats(self.repo.name+'/stats/contributors',self.statsCallback);
+    });
+  }
+
+  Metrics.prototype.pullRequestCallback = function(data) {
+    var self = this;
+    console.log(this.team.name+'\n  '+this.repo.name)
+    data.forEach(function(pull) {
+      if(self.members[pull.user.login]) {
+        var created = new Date(pull.created_at)
+        var closed = new Date(pull.closed_at)
+        //if(closed.getTime() > self.timeRange[0] && closed.getTime() < self.timeRange[1]) {
+//console.log(pull.base.repo.name+' '+pull.user.login+' closed '+closed.getTime()+' timeRange[0] '+self.timeRange[0]);
+        if(closed.getTime() > self.timeRange[0]) {
+          console.log('    '+pull.user.login);
+          console.log('      '+created.toDateString()+' closed '+closed.toDateString())
+        }
+      }
+    });
+  }
+
+  Metrics.prototype.statsCallback = function (stats) {
+    console.log(this.team.name+'\n  '+this.repo.name)
+    var self = this;
+    var totals = {commits:0,additions:0,deletions:0};
+    stats.forEach(function(stat) {
+      var member = stat.author.login
+      if(self.members[member]) {
+        console.log('    '+member);
+        self.members[member].weeks = stat.weeks.slice(-2)
+        self.members[member].weeks.forEach(function(week,i) {
+          var date = new Date()
+          var time = parseInt(week.w+'000');
+          date.setTime(time);
+          if(i===0) {
+//console.log('setting self.timeRange '+date.toDateString());
+            self.timeRange.push(time);
+          }
+          var commit = parseInt(week.c);
+          var additions = parseInt(week.a);
+          var deletions = parseInt(week.d);
+          totals.commits += commit;
+          totals.additions += additions;
+          totals.deletions += deletions;
+          console.log('      '+date.toDateString()+' commits:'+week.c+' additions:'+week.a+' deletions:'+week.d);
+        });
+      }
+    });
+    console.log('  commits:'+totals.commits+' additions:'+totals.additions+' deletions:'+totals.deletions+'\n');
+    getPullRequests(this.repo.name,this.repo.branch,this.pullRequestCallback)
+  }
+
+  Metrics.prototype.teamCallback = function (team) {
+    getMembers(team.id, this.membersCallback);
+  }
+
   return Metrics;
 })();
 
+function getInput(repo, branch, path, inputcallback) {
+  function callback(repo, branch, path, data) {
+    var encoded = data.content;
+    var content = new Buffer(encoded, 'base64').toString('ascii');
+    inputcallback(content)
+  }
+  gitapi(repo+'/contents'+path+'?ref='+branch,callback.bind(undefined,repo,branch,path));
+}
 
 function getTeam(team, teamcallback) {
   function teamsCallback(name, teamcallback, teams) {
@@ -56,58 +148,15 @@ function getTeam(team, teamcallback) {
   gitapi('/orgs/intel-hadoop/teams',teamsCallback.bind(undefined,team,teamcallback));
 }
 
-function pullRequestCallback(data) {
-  data.forEach(function(pull) {
-    if(metrics.members[pull.user.login]) {
-      var created = new Date(pull.created_at)
-      var closed = new Date(pull.closed_at)
-      console.log(pull.base.repo.name+' '+pull.user.login+' created '+created.toDateString()+' closed '+closed.toDateString())
-    }
-  });
+function getStats(repo, statscallback) {
+  gitapi(repo,statscallback);
 }
 
-function getPullRequests(repo, pullrequestcallback) {
+function getPullRequests(repo, branch, pullrequestcallback) {
   function pullRequestsCallback(repo, pullrequestcallback, data) {
     pullrequestcallback(data)
   }
-  gitapi(repo+'/pulls?state=closed&direction=asc',pullRequestsCallback.bind(undefined,repo,pullrequestcallback));
-}
-
-
-function membersCallback(team, repo, membersArray) {
-  var members = {}
-  membersArray.forEach(function(member) {
-    members[member.login] = {}
-  });
-  function statsCallback(team, repo, members, stats) {
-    console.log(team+'\n  '+repo)
-    var totals = {commits:0,additions:0,deletions:0};
-    stats.forEach(function(stat) {
-      var member = stat.author.login
-      if(members[member]) {
-        console.log('    '+member);
-        members[member].weeks = stat.weeks.slice(-2)
-        members[member].weeks.forEach(function(week) {
-          var date = new Date()
-          date.setTime(parseInt(week.w+'000'));
-          var commit = parseInt(week.c);
-          var additions = parseInt(week.a);
-          var deletions = parseInt(week.d);
-          totals.commits += commit;
-          totals.additions += additions;
-          totals.deletions += deletions;
-          console.log('      '+date.toDateString()+' commits:'+week.c+' additions:'+week.a+' deletions:'+week.d);
-        });
-      }
-    });
-    metrics.addMembers(members);
-    console.log('  commits:'+totals.commits+' additions:'+totals.additions+' deletions:'+totals.deletions+'\n');
-    getPullRequests(repo,pullRequestCallback)
-  }
-  function getStats(repo, statscallback) {
-    gitapi(repo,statscallback);
-  }
-  getStats(repo+'/stats/contributors',statsCallback.bind(undefined, team, repo, members));
+  gitapi(repo+'/pulls?state=closed&branch='+branch+'&direction=desc',pullRequestsCallback.bind(undefined,repo,pullrequestcallback));
 }
 
 function getMembers(teamid,memberscallback) {
@@ -118,10 +167,5 @@ function getCommits(range,commitsCallback) {
   var uri = '/teams/'+teamid+'/members';
   gitapi(uri,memberscallback);
 }
-function teamCallback(memberscallback, team) {
-  getMembers(team.id,memberscallback);
-}
-var metrics = new Metrics('intel-hadoop', 'gearpump', 'gearpump')
-//getTeam('oryx',teamCallback.bind(undefined,membersCallback.bind(undefined, 'oryx', '/repos/OryxProject/oryx')))
-getTeam('gearpump',teamCallback.bind(undefined,membersCallback.bind(undefined, 'gearpump','/repos/intel-hadoop/gearpump')))
-//getTeam('spark',teamCallback.bind(undefined,membersCallback.bind(undefined, 'spark','/repos/apache/spark')))
+
+new MetricsInput()
