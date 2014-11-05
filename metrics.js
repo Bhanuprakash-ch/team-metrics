@@ -53,11 +53,23 @@ Metrics = (function() {
     this.members = {};
     this.repo = null;
     this.timeRange = [];
+    this.generateReport = this.generateReport.bind(this);
     this.membersCallback = this.membersCallback.bind(this);
     this.pullRequestCallback = this.pullRequestCallback.bind(this);
     this.statsCallback = this.statsCallback.bind(this);
     this.teamCallback = this.teamCallback.bind(this);
     getTeam(this.team.name, this.teamCallback);
+  }
+
+  Metrics.prototype.generateReport = function () {
+    console.log(this.team.name+'\n  '+this.repo.name)
+    for(var member in this.members) {
+      console.log('    '+member);
+      this.members[member].weeks && this.members[member].weeks.forEach(function(week) {
+        console.log('      '+week.date.toDateString()+' commits:'+week.commits+' pullrequests:'+week.pullrequests+' additions:'+week.additions+' deletions:'+week.deletions);
+      });
+    }
+    console.log('  commits:'+this.totals.commits+' pullrequests:'+this.totals.pullrequests+' additions:'+this.totals.additions+' deletions:'+this.totals.deletions+'\n');
   }
 
   Metrics.prototype.membersCallback = function (membersArray) {
@@ -73,49 +85,45 @@ Metrics = (function() {
 
   Metrics.prototype.pullRequestCallback = function(data) {
     var self = this;
-    console.log(this.team.name+'\n  '+this.repo.name)
     data.forEach(function(pull) {
       if(self.members[pull.user.login]) {
         var created = new Date(pull.created_at)
         var closed = new Date(pull.closed_at)
-        //if(closed.getTime() > self.timeRange[0] && closed.getTime() < self.timeRange[1]) {
-//console.log(pull.base.repo.name+' '+pull.user.login+' closed '+closed.getTime()+' timeRange[0] '+self.timeRange[0]);
-        if(closed.getTime() > self.timeRange[0]) {
-          console.log('    '+pull.user.login);
-          console.log('      '+created.toDateString()+' closed '+closed.toDateString())
+        if(closed.getTime() >= self.timeRange[0] && closed.getTime() < self.timeRange[1]) {
+          self.members[pull.user.login].weeks[0].pullrequests++;
+        } else if(closed.getTime() >= self.timeRange[1]) {
+          self.members[pull.user.login].weeks[1].pullrequests++;
         }
       }
     });
+    this.generateReport()
   }
 
   Metrics.prototype.statsCallback = function (stats) {
-    console.log(this.team.name+'\n  '+this.repo.name)
     var self = this;
-    var totals = {commits:0,additions:0,deletions:0};
+    self.totals = {commits:0,pullrequests:0,additions:0,deletions:0};
     stats.forEach(function(stat) {
       var member = stat.author.login
       if(self.members[member]) {
-        console.log('    '+member);
-        self.members[member].weeks = stat.weeks.slice(-2)
-        self.members[member].weeks.forEach(function(week,i) {
-          var date = new Date()
-          var time = parseInt(week.w+'000');
-          date.setTime(time);
+        var weeks = stat.weeks.slice(-2)
+        self.members[member].weeks = [];
+        weeks.forEach(function(aweek,i) {
+          var week = {date:new Date(),commits:0,pullrequests:0,additions:0,deletions:0};
+          var time = parseInt(aweek.w+'000');
           if(i===0) {
-//console.log('setting self.timeRange '+date.toDateString());
             self.timeRange.push(time);
           }
-          var commit = parseInt(week.c);
-          var additions = parseInt(week.a);
-          var deletions = parseInt(week.d);
-          totals.commits += commit;
-          totals.additions += additions;
-          totals.deletions += deletions;
-          console.log('      '+date.toDateString()+' commits:'+week.c+' additions:'+week.a+' deletions:'+week.d);
+          week.date.setTime(time);
+          week.commits = parseInt(aweek.c);
+          week.additions = parseInt(aweek.a);
+          week.deletions = parseInt(aweek.d);
+          self.members[member].weeks.push(week);
+          self.totals.commits += week.commits;
+          self.totals.additions += week.additions;
+          self.totals.deletions += week.deletions;
         });
       }
     });
-    console.log('  commits:'+totals.commits+' additions:'+totals.additions+' deletions:'+totals.deletions+'\n');
     getPullRequests(this.repo.name,this.repo.branch,this.pullRequestCallback)
   }
 
