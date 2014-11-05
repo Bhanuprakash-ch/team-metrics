@@ -21,7 +21,7 @@ function gitapi(uri, cb) {
     }
   };
   function callback(error, response, body) {
-    if (!error && response.statusCode == 200) {
+    if (!error && (response.statusCode === 200 || response.statusCode === 202)) {
       var info = JSON.parse(body);
       cb(info);
     } else {
