@@ -16,5 +16,14 @@
         "branch": "master"
       }
     ]
+  },
+  {
+    "name": "spark",
+    "repos": [
+      {
+        "name": "/repos/apache/spark",
+        "branch": "master"
+      }
+    ]
   }
 ]
