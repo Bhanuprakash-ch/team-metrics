@@ -69,7 +69,7 @@ Metrics = (function() {
     for(var member in this.members) {
       console.log('    '+member);
       this.members[member].weeks && this.members[member].weeks.forEach(function(week) {
-        console.log('      '+week.date.toDateString()+' commits:'+week.commits+' issues created:'+week.issuescreated+' pullrequests:'+week.pullrequests+' additions:'+week.additions+' deletions:'+week.deletions);
+        console.log('      week of '+week.date.toDateString()+' commits:'+week.commits+' issues created:'+week.issuescreated+' pullrequests:'+week.pullrequests+' additions:'+week.additions+' deletions:'+week.deletions);
       });
     }
     console.log('  commits:'+this.totals.commits+' issues created:'+this.totals.issuescreated+' pullrequests:'+this.totals.pullrequests+' additions:'+this.totals.additions+' deletions:'+this.totals.deletions+'\n');
@@ -129,6 +129,7 @@ Metrics = (function() {
   Metrics.prototype.statsCallback = function (stats) {
     var self = this, firsttime = true;
     self.totals = {commits:0,issuescreated:0,pullrequests:0,additions:0,deletions:0};
+//console.log(self.team.name+' '+self.repo.name)
     stats.forEach(function(stat) {
       var member = stat.author.login
       if(self.members[member]) {
