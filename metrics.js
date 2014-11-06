@@ -108,9 +108,10 @@ MetricsInput = (function() {
       self.teams.forEach(function(team) {
         team.team.repos.forEach(function(repo) {
           var repoG = {};
-          repoG.name = repo.name;
+          repoG.name = repo.name.split('/').pop();
+console.log(repo.name+' '+repoG.name+' totals '+repo.totals);
           repoG.y = repo.totals.commits;
-          var id = repo.name+'_members';
+          var id = repoG.name+'_members';
           repoG.drilldown = id;
           commits.series[0].data.push(repoG);
           var repoM = {id: id, data: []};
