@@ -32,14 +32,13 @@
 <script>
 
 $(function () {
-
     // Create the chart
     $('#container').highcharts({
         chart: {
-            type: 'column'
+            type: 'pie'
         },
         title: {
-            text: 'Drilldown from column to pie'
+            text: 'Summary for week of Nov 1'
         },
         xAxis: {
             type: 'category',
@@ -48,11 +47,9 @@ $(function () {
         yAxis: {
             showEmpty: false
         },
-
         legend: {
             enabled: false
         },
-
         plotOptions: {
             series: {
                 borderWidth: 0,
@@ -61,47 +58,46 @@ $(function () {
                 }
             }
         },
-
         series: [{
-            name: 'Things',
+            name: 'Commits',
             colorByPoint: true,
             data: [{
-                name: 'Animals',
+                name: 'Spark',
                 y: 5,
-                drilldown: 'animals'
+                drilldown: 'sparkmembers'
             }, {
-                name: 'Fruits',
+                name: 'Oryx',
                 y: 2,
-                drilldown: 'fruits'
+                drilldown: 'oryxmembers'
             }, {
-                name: 'Cars',
+                name: 'Gearpump',
                 y: 4,
-                drilldown: 'cars'
+                drilldown: 'gearpumpmembers'
             }],
             type: 'column'
         }],
         drilldown: {
             series: [{
-                id: 'animals',
+                id: 'sparkmembers',
                 data: [
-                    ['Cats', 4],
-                    ['Dogs', 2],
-                    ['Cows', 1],
-                    ['Sheep', 2],
-                    ['Pigs', 1]
+                    ['member1', 4],
+                    ['member2', 2],
+                    ['member3', 1],
+                    ['member4', 2],
+                    ['member5', 1]
                 ]
             }, {
-                id: 'fruits',
+                id: 'oryxmembers',
                 data: [
-                    ['Apples', 4],
-                    ['Oranges', 2]
+                    ['member1', 4],
+                    ['member2', 2]
                 ]
             }, {
-                id: 'cars',
+                id: 'gearpumpmembers',
                 data: [
-                    ['Toyota', 4],
-                    ['Opel', 2],
-                    ['Volkswagen', 2]
+                    ['member1', 4],
+                    ['member2', 2],
+                    ['member3', 2]
                 ]
             }]
         }
