@@ -30,7 +30,6 @@
 
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
-<!-- Data from www.netmarketshare.com. Select Browsers => Desktop share by version. Download as tsv. -->
 <pre id="tsv" style="display:none">Browser Version	Total Market Share
 Microsoft Internet Explorer 8.0	26.61%
 Microsoft Internet Explorer 9.0	16.96%
@@ -77,124 +76,84 @@ Microsoft Internet Explorer 8.0 - Tencent Traveler Edition	0.09%</pre>
       </div>
     </div>
 <script>
+
 $(function () {
 
-    Highcharts.data({
-        csv: document.getElementById('tsv').innerHTML,
-        itemDelimiter: '\t',
-        parsed: function (columns) {
+    // Create the chart
+    $('#container').highcharts({
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'Drilldown from column to pie'
+        },
+        xAxis: {
+            type: 'category',
+            showEmpty: false
+        },
+        yAxis: {
+            showEmpty: false
+        },
 
-            var brands = {},
-                brandsData = [],
-                versions = {},
-                drilldownSeries = [];
+        legend: {
+            enabled: false
+        },
 
-            // Parse percentage strings
-            columns[1] = $.map(columns[1], function (value) {
-                if (value.indexOf('%') === value.length - 1) {
-                    value = parseFloat(value);
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true
                 }
-                return value;
-            });
+            }
+        },
 
-            $.each(columns[0], function (i, name) {
-                var brand,
-                    version;
-
-                if (i > 0) {
-
-                    // Remove special edition notes
-                    name = name.split(' -')[0];
-
-                    // Split into brand and version
-                    version = name.match(/([0-9]+[\.0-9x]*)/);
-                    if (version) {
-                        version = version[0];
-                    }
-                    brand = name.replace(version, '');
-
-                    // Create the main data
-                    if (!brands[brand]) {
-                        brands[brand] = columns[1][i];
-                    } else {
-                        brands[brand] += columns[1][i];
-                    }
-
-                    // Create the version data
-                    if (version !== null) {
-                        if (!versions[brand]) {
-                            versions[brand] = [];
-                        }
-                        versions[brand].push(['v' + version, columns[1][i]]);
-                    }
-                }
-
-            });
-
-            $.each(brands, function (name, y) {
-                brandsData.push({
-                    name: name,
-                    y: y,
-                    drilldown: versions[name] ? name : null
-                });
-            });
-            $.each(versions, function (key, value) {
-                drilldownSeries.push({
-                    name: key,
-                    id: key,
-                    data: value
-                });
-            });
-
-            // Create the chart
-            $('#container').highcharts({
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Browser market shares. November, 2013'
-                },
-                subtitle: {
-                    text: 'Click the columns to view versions. Source: netmarketshare.com.'
-                },
-                xAxis: {
-                    type: 'category'
-                },
-                yAxis: {
-                    title: {
-                        text: 'Total percent market share'
-                    }
-                },
-                legend: {
-                    enabled: false
-                },
-                plotOptions: {
-                    series: {
-                        borderWidth: 0,
-                        dataLabels: {
-                            enabled: true,
-                            format: '{point.y:.1f}%'
-                        }
-                    }
-                },
-
-                tooltip: {
-                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-                },
-
-                series: [{
-                    name: 'Brands',
-                    colorByPoint: true,
-                    data: brandsData
-                }],
-                drilldown: {
-                    series: drilldownSeries
-                }
-            });
+        series: [{
+            name: 'Things',
+            colorByPoint: true,
+            data: [{
+                name: 'Animals',
+                y: 5,
+                drilldown: 'animals'
+            }, {
+                name: 'Fruits',
+                y: 2,
+                drilldown: 'fruits'
+            }, {
+                name: 'Cars',
+                y: 4,
+                drilldown: 'cars'
+            }],
+            type: 'column'
+        }],
+        drilldown: {
+            series: [{
+                id: 'animals',
+                data: [
+                    ['Cats', 4],
+                    ['Dogs', 2],
+                    ['Cows', 1],
+                    ['Sheep', 2],
+                    ['Pigs', 1]
+                ]
+            }, {
+                id: 'fruits',
+                data: [
+                    ['Apples', 4],
+                    ['Oranges', 2]
+                ]
+            }, {
+                id: 'cars',
+                data: [
+                    ['Toyota', 4],
+                    ['Opel', 2],
+                    ['Volkswagen', 2]
+                ]
+            }]
         }
     });
 });
+
 </script>
   </body>
 </html>
