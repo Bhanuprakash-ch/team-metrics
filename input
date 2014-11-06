@@ -1,5 +1,14 @@
 [
   {
+    "name": "flink",
+    "repos": [
+      {
+        "name": "/repos/apache/incubator-flink",
+        "branch": "master"
+      }
+    ]
+  },
+  {
     "name": "gearpump",
     "repos": [
       {
@@ -18,6 +27,24 @@
     ]
   },
   {
+    "name": "hbase",
+    "repos": [
+      {
+        "name": "/repos/apache/hbase",
+        "branch": "trunk"
+      }
+    ]
+  },
+  {
+    "name": "mahout",
+    "repos": [
+      {
+        "name": "/repos/apache/mahout",
+        "branch": "master"
+      }
+    ]
+  },
+  {
     "name": "oryx",
     "repos": [
       {
@@ -32,6 +59,14 @@
       {
         "name": "/repos/apache/spark",
         "branch": "master"
+      },
+      {
+        "name": "/repos/amplab/tachyon",
+        "branch": "master"
+      },
+      {
+        "name": "/repos/amplab-extras/SparkR-pkg",
+        "branch": "master"
       }
     ]
   },
@@ -40,15 +75,6 @@
     "repos": [
       {
         "name": "/repos/apache/storm",
-        "branch": "master"
-      }
-    ]
-  },
-  {
-    "name": "Tachyon ",
-    "repos": [
-      {
-        "name": "/repos/amplab/tachyon",
         "branch": "master"
       }
     ]
