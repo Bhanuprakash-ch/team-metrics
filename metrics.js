@@ -126,10 +126,10 @@ Metrics = (function() {
       }
     });
     isNaN(this.timeRange[0]) ||
-    getIssues(repo.name,new Date(this.timeRange[0]).toISOString(),this.issuesCallback.bind(this,repo));
+    getIssues(repo.name, new Date(this.timeRange[0]).toISOString(),this.issuesCallback.bind(this,repo));
   }
 
-  Metrics.prototype.statsCallback = function (repo, stats) {
+  Metrics.prototype.statsCallback = function(repo, stats) {
     var self = this, firsttime = true;
     self.totals = {commits:0,issuescreated:0,pullrequests:0,additions:0,deletions:0};
     stats.forEach(function(stat) {
