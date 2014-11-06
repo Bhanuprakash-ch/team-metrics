@@ -91,6 +91,7 @@ Metrics = (function() {
     this.members = {};
     this.timeRange = Array(2);
     this.generateReport = this.generateReport.bind(this);
+    this.generateGraph = this.generateGraph.bind(this);
     this.issuesCallback = this.issuesCallback.bind(this);
     this.membersCallback = this.membersCallback.bind(this);
     this.pullRequestCallback = this.pullRequestCallback.bind(this);
@@ -108,6 +109,9 @@ Metrics = (function() {
       });
     }
     console.log('  commits:'+this.totals.commits+' issues created:'+this.totals.issuescreated+' pullrequests:'+this.totals.pullrequests+' additions:'+this.totals.additions+' deletions:'+this.totals.deletions+'\n');
+  }
+
+  Metrics.prototype.generateGraph = function () {
   }
 
   Metrics.prototype.issuesCallback = function (repo, issues) {
