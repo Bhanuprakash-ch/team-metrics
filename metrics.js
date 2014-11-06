@@ -8,13 +8,13 @@ curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/pulls?state=closed&d
 curl -i https://api.github.com/repos/intel-hadoop/gearpump/stats/contributors
 curl -i https://api.github.com/repos/intel-hadoop/gearpump/stats/participation
 */
-function gitapi(uri, cb) {
+function gitapi(user, password, uri, cb) {
   var request = require('request');
   var options = {
     url: 'https://api.github.com'+uri,
     auth: {
-      'user': 'kkasravi',
-      'pass': ''
+      'user': user,
+      'pass': password
     },
     headers: {
         'User-Agent': 'request'
@@ -33,9 +33,32 @@ function gitapi(uri, cb) {
 
 MetricsInput = (function() {
   function MetricsInput() {
+    var self = this;
     this.input = null;
     this.inputCallback = this.inputCallback.bind(this);
-    var input = (process.argv.length > 2) ? process.argv[3] : 'input';
+    this.usage = this.usage.bind(this);
+    this.program = process.argv[1];
+    var options = process.argv.slice(2), user, password;
+    options.map(function(arg,i) {
+      switch(arg) {
+        case "-h":
+          self.usage();
+          break;
+        case "-u":
+          user = options[i+1];
+          break;
+        case "-p":
+          password = options[i+1];
+          break;
+        default:
+          break;
+      }
+    });
+    if(!user || !password) {
+      this.usage();
+    }
+    gitapi = gitapi.bind(undefined, user, password);
+    var input = (arguments.length > 4) ? process.argv[4] : 'input';
     var fs = require('fs');
     fs.readFile(input, 'utf8', this.inputCallback);
   }
@@ -49,6 +72,14 @@ MetricsInput = (function() {
     this.input.forEach(function(team) {
       new Metrics(team)
     });
+  }
+
+  MetricsInput.prototype.usage = function () {
+    console.log("usage: "+this.program+' -u user -p password [input]');
+    console.log("  -u: user");
+    console.log("  -p: password");
+    console.log("  input: input file");
+    process.exit(0);
   }
 
   return MetricsInput;
