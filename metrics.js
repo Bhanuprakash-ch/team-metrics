@@ -14,7 +14,7 @@ function gitapi(uri, cb) {
     url: 'https://api.github.com'+uri,
     auth: {
       'user': 'kkasravi',
-      'pass': 'kdkkdk1'
+      'pass': ''
     },
     headers: {
         'User-Agent': 'request'
