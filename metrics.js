@@ -35,10 +35,15 @@ MetricsInput = (function() {
   function MetricsInput() {
     this.input = null;
     this.inputCallback = this.inputCallback.bind(this);
-    getInput('/repos/intel-hadoop/team-metrics','master','/input', this.inputCallback);
+    var input = (process.argv.length > 2) ? process.argv[3] : 'input';
+    var fs = require('fs');
+    fs.readFile(input, 'utf8', this.inputCallback);
   }
 
-  MetricsInput.prototype.inputCallback = function (data) {
+  MetricsInput.prototype.inputCallback = function (err, data) {
+    if(err) {
+      throw err;
+    }
     this.input = JSON.parse(data);
     var self = this;
     this.input.forEach(function(team) {
@@ -53,7 +58,6 @@ Metrics = (function() {
   function Metrics(team) {
     this.team = team;
     this.members = {};
-    this.repo = null;
     this.timeRange = Array(2);
     this.generateReport = this.generateReport.bind(this);
     this.issuesCallback = this.issuesCallback.bind(this);
@@ -64,8 +68,8 @@ Metrics = (function() {
     getTeam(this.team.name, this.teamCallback);
   }
 
-  Metrics.prototype.generateReport = function () {
-    console.log(this.team.name+'\n  '+this.repo.name)
+  Metrics.prototype.generateReport = function (repo) {
+    console.log(this.team.name+'\n  '+repo.name)
     for(var member in this.members) {
       console.log('    '+member);
       this.members[member].weeks && this.members[member].weeks.forEach(function(week) {
@@ -75,7 +79,7 @@ Metrics = (function() {
     console.log('  commits:'+this.totals.commits+' issues created:'+this.totals.issuescreated+' pullrequests:'+this.totals.pullrequests+' additions:'+this.totals.additions+' deletions:'+this.totals.deletions+'\n');
   }
 
-  Metrics.prototype.issuesCallback = function (issues) {
+  Metrics.prototype.issuesCallback = function (repo, issues) {
     var self = this;
     issues.forEach(function(issue) {
       if(self.members[issue.user.login]) {
@@ -89,7 +93,7 @@ Metrics = (function() {
         }
       }
     });
-    this.generateReport()
+    this.generateReport(repo)
   }
 
   Metrics.prototype.membersCallback = function (membersArray) {
@@ -102,12 +106,11 @@ Metrics = (function() {
       ]
     });
     this.team.repos.forEach(function(repo) {
-      self.repo = repo;
-      getStats(self.repo.name+'/stats/contributors',self.statsCallback);
+      getStats(repo.name+'/stats/contributors',self.statsCallback.bind(self,repo));
     });
   }
 
-  Metrics.prototype.pullRequestCallback = function(data) {
+  Metrics.prototype.pullRequestCallback = function(repo, data) {
     var self = this;
     data.forEach(function(pull) {
       if(self.members[pull.user.login]) {
@@ -123,13 +126,12 @@ Metrics = (function() {
       }
     });
     isNaN(this.timeRange[0]) ||
-    getIssues(this.repo.name,new Date(this.timeRange[0]).toISOString(),this.issuesCallback);
+    getIssues(repo.name,new Date(this.timeRange[0]).toISOString(),this.issuesCallback.bind(this,repo));
   }
 
-  Metrics.prototype.statsCallback = function (stats) {
+  Metrics.prototype.statsCallback = function (repo, stats) {
     var self = this, firsttime = true;
     self.totals = {commits:0,issuescreated:0,pullrequests:0,additions:0,deletions:0};
-//console.log(self.team.name+' '+self.repo.name)
     stats.forEach(function(stat) {
       var member = stat.author.login
       if(self.members[member]) {
@@ -150,7 +152,7 @@ Metrics = (function() {
         firsttime = false;
       }
     });
-    getPullRequests(this.repo.name,this.repo.branch,this.pullRequestCallback)
+    getPullRequests(repo.name,repo.branch,this.pullRequestCallback.bind(self,repo))
   }
 
   Metrics.prototype.teamCallback = function (team) {

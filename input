@@ -78,5 +78,14 @@
         "branch": "master"
       }
     ]
+  },
+  {
+    "name": "team-metrics",
+    "repos": [
+      {
+        "name": "/repos/intel-hadoop/team-metrics",
+        "branch": "master"
+      }
+    ]
   }
 ]
