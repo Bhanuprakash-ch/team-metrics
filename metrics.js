@@ -69,60 +69,61 @@ MetricsInput = (function() {
 
   MetricsInput.prototype.generateGraph = function () {
     var self = this;
-    this.timeRanges.forEach(function(timeRange,i) {
-      var commits = {
-        chart: {
-          type:'pie'
-        },
-        title: {
-          text: 'Summary for week of '+new Date(timeRange).toDateString()
-        },
-        xAxis: {
-          type: 'category',
-          showEmpty: false
-        },
-        yAxis: {
-          showEmpty: false
-        },
-        legend: {
-          showEmpty: false
-        },
-        plotOptions: {
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true
-                }
-            }
-        },
-        series: [{
-            name: 'Commits',
-            colorByPoint: true,
-            data: [],
-            type: 'column'
-        }],
-        drilldown: {
-            series: []
-        }
-      };
-      self.teams.forEach(function(team) {
-        team.team.repos.forEach(function(repo) {
-          var repoG = {};
-          repoG.name = repo.name.split('/').pop();
-          repoG.y = repo.totals.commits;
-          var id = repoG.name+'_members';
-          repoG.drilldown = id;
-          commits.series[0].data.push(repoG);
-          var repoM = {id: id, data: []};
-          for(var member in repo.members) {
-            repoM.data.push([member,repo.members[member].weeks[i].commits]);
+    var oneDay = 24*60*60*1000;
+    var twoWeeks = (this.timeRanges[1]-this.timeRanges[0])*2-oneDay;
+    var commits = {
+      chart: {
+        type:'pie'
+      },
+      title: {
+        text: 'Summary from '+new Date(this.timeRanges[0]).toDateString()+' to '+
+          new Date(this.timeRanges[0]+twoWeeks).toDateString()
+      },
+      xAxis: {
+        type: 'category',
+        showEmpty: false
+      },
+      yAxis: {
+        showEmpty: false
+      },
+      legend: {
+        showEmpty: false
+      },
+      plotOptions: {
+          series: {
+              borderWidth: 0,
+              dataLabels: {
+                  enabled: true
+              }
           }
-          commits.drilldown.series.push(repoM);
-        });
+      },
+      series: [{
+          name: 'Commits',
+          colorByPoint: true,
+          data: [],
+          type: 'column'
+      }],
+      drilldown: {
+          series: []
+      }
+    };
+    self.teams.forEach(function(team) {
+      team.team.repos.forEach(function(repo) {
+        var repoG = {};
+        repoG.name = repo.name.split('/').pop();
+        repoG.y = repo.totals.commits;
+        var id = repoG.name+'_members';
+        repoG.drilldown = id;
+        commits.series[0].data.push(repoG);
+        var repoM = {id: id, data: []};
+        for(var member in repo.members) {
+          repoM.data.push([member,repo.members[member].weeks.reduce(function(p,c){return p.commits+c.commits;})]);
+        }
+        commits.drilldown.series.push(repoM);
       });
-      self.charts.push(commits);
-      console.log(JSON.stringify(commits));
     });
+    self.charts.push(commits);
+    console.log(JSON.stringify(commits));
   }
 
   MetricsInput.prototype.inputCallback = function (err, data) {
