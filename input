@@ -22,7 +22,7 @@
     "repos": [
       {
         "name": "/repos/apache/hive",
-        "branch": "trunk"
+        "branch": "spark"
       }
     ]
   },
