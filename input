@@ -22,7 +22,7 @@
     "repos": [
       {
         "name": "/repos/apache/hive",
-        "branch": "trunk"
+        "branch": "spark"
       }
     ]
   },
@@ -66,6 +66,10 @@
       },
       {
         "name": "/repos/amplab-extras/SparkR-pkg",
+        "branch": "master"
+      }, 
+      {
+        "name": "/repos/intel-hadoop/HiBench",
         "branch": "master"
       }
     ]
