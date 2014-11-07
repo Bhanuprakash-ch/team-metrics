@@ -75,7 +75,7 @@ MetricsInput = (function() {
           type:'pie'
         },
         title: {
-          text: 'Summary for week of '+new Date(timeRange).toISOString()
+          text: 'Summary for week of '+new Date(timeRange).toDateString()
         },
         xAxis: {
           type: 'category',
@@ -109,7 +109,6 @@ MetricsInput = (function() {
         team.team.repos.forEach(function(repo) {
           var repoG = {};
           repoG.name = repo.name.split('/').pop();
-console.log(repo.name+' '+repoG.name+' totals '+repo.totals);
           repoG.y = repo.totals.commits;
           var id = repoG.name+'_members';
           repoG.drilldown = id;
@@ -122,7 +121,7 @@ console.log(repo.name+' '+repoG.name+' totals '+repo.totals);
         });
       });
       self.charts.push(commits);
-console.log(JSON.stringify(commits));
+      console.log(JSON.stringify(commits));
     });
   }
 
