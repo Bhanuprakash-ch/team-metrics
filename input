@@ -67,6 +67,10 @@
       {
         "name": "/repos/amplab-extras/SparkR-pkg",
         "branch": "master"
+      }, 
+      {
+        "name": "/repos/intel-hadoop/HiBench",
+        "branch": "master"
       }
     ]
   },
