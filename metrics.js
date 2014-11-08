@@ -76,7 +76,7 @@ MetricsInput = (function() {
         type:'pie'
       },
       title: {
-        text: 'Summary from '+new Date(this.timeRanges[0]).toDateString()+' to '+
+        text: 'Commits from '+new Date(this.timeRanges[0]).toDateString()+' to '+
           new Date(this.timeRanges[0]+twoWeeks).toDateString()
       },
       xAxis: {
