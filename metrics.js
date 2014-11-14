@@ -1,12 +1,12 @@
 #!/usr/local/bin/node
 /*
-curl -i https://api.github.com/orgs/intel-hadoop/members
-curl -i https://api.github.com/orgs/intel-hadoop/teams
+curl -i 'https://api.github.com/orgs/intel-hadoop/members'
+curl -i 'https://api.github.com/orgs/intel-hadoop/teams'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/issues?since=2014-10-16&state=open'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/commits?since=2014-10-16&until=2014-10-31'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/pulls?state=closed&direction=asc'
-curl -i https://api.github.com/repos/intel-hadoop/gearpump/stats/contributors
-curl -i https://api.github.com/repos/intel-hadoop/gearpump/stats/participation
+curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/stats/contributors'
+curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/stats/participation'
 */
 function gitapi(user, password, uri, cb) {
   var request = require('request');
@@ -21,7 +21,7 @@ function gitapi(user, password, uri, cb) {
     }
   };
   function callback(error, response, body) {
-    if (!error && (response.statusCode === 200 || response.statusCode === 202)) {
+    if (!error && (response.statusCode === 200)) {
       var info = JSON.parse(body);
       cb(info);
     } else {
@@ -38,6 +38,7 @@ MetricsInput = (function() {
     this.input = null;
     this.program = process.argv[1];
     this.teams = [];
+    this.team = null;
     this.timeRanges = Array(2);
     this.generateGraph = this.generateGraph.bind(this);
     this.inputCallback = this.inputCallback.bind(this);
@@ -53,6 +54,9 @@ MetricsInput = (function() {
           break;
         case "-p":
           password = options[i+1];
+          break;
+        case "-t":
+          self.team = options[i+1];
           break;
         default:
           break;
@@ -117,7 +121,8 @@ MetricsInput = (function() {
         commits.series[0].data.push(repoG);
         var repoM = {id: id, data: []};
         for(var member in repo.members) {
-          repoM.data.push([member,repo.members[member].weeks.reduce(function(p,c){return p.commits+c.commits;})]);
+          repo.members[member].weeks &&
+            repoM.data.push([member,repo.members[member].weeks.reduce(function(p,c){return p.commits+c.commits;})]);
         }
         commits.drilldown.series.push(repoM);
       });
@@ -132,6 +137,13 @@ MetricsInput = (function() {
       throw err;
     }
     this.input = JSON.parse(data);
+    this.input = this.team ? 
+      this.input.filter(function(team){
+        if(self.team===team.name) {
+          return true;
+        }
+        return false;
+      }): this.input;
     this.input.forEach(function(team) {
       self.teams.push(new Metrics(self, team));
     });
@@ -142,6 +154,7 @@ MetricsInput = (function() {
     console.log("usage: "+this.program+' -u user -p password [input]');
     console.log("  -u: user");
     console.log("  -p: password");
+    console.log("  -t: team");
     console.log("  input: input file");
     process.exit(0);
   }
@@ -168,25 +181,48 @@ Metrics = (function() {
   Metrics.prototype.generateReport = function (repo) {
     console.log(this.team.name+'\n  '+repo.name)
     for(var member in repo.members) {
-      console.log('    '+member);
-      repo.members[member].weeks && repo.members[member].weeks.forEach(function(week) {
-        console.log('      week of '+week.date.toDateString()+' commits:'+week.commits+' issues created:'+week.issuescreated+' pullrequests:'+week.pullrequests+' additions:'+week.additions+' deletions:'+week.deletions);
-      });
+      if(repo.members[member].weeks && repo.members[member].weeks.length) {
+        console.log('    '+member);
+        repo.members[member].weeks.forEach(function(week) {
+          console.log('      week of '+week.date.toDateString()+' commits:'+week.commits+' issues (created:'+week.issues.created+', assigned:'+week.issues.assigned+') pullrequests:'+week.pullrequests+' additions:'+week.additions+' deletions:'+week.deletions);
+          if(week.issues.items && week.issues.items.length) {
+            console.log('        issues:');
+            week.issues.items.forEach(function(issue) {
+              console.log('          '+issue.type+': '+issue.title);   
+            });
+          }
+        });
+      }
     }
-    console.log('  commits:'+repo.totals.commits+' issues created:'+repo.totals.issuescreated+' pullrequests:'+repo.totals.pullrequests+' additions:'+repo.totals.additions+' deletions:'+repo.totals.deletions+'\n');
+    console.log('  commits:'+repo.totals.commits+' issues (created:'+repo.totals.issues.created+', assigned:'+repo.totals.issues.assigned+') pullrequests:'+repo.totals.pullrequests+' additions:'+repo.totals.additions+' deletions:'+repo.totals.deletions+'\n');
   }
 
   Metrics.prototype.issuesCallback = function (repo, issues) {
     var self = this;
+    issues = issues.filter(function(issue){return issue.pull_request?false:true;});
     issues.forEach(function(issue) {
       if(repo.members[issue.user.login]) {
         var created = new Date(issue.created_at)
         if(created.getTime() >= self.timeRanges[0] && created.getTime() < self.timeRanges[1]) {
-          repo.members[issue.user.login].weeks[0].issuescreated++;
-          repo.totals.issuescreated++;
+          repo.members[issue.user.login].weeks[0].issues.created++;
+          repo.members[issue.user.login].weeks[0].issues.items.push({type:'created',label:((issue.labels && issue.labels.length) ? issue.labels[0].name: ''),title:issue.title});
+          repo.totals.issues.created++;
         } else if(created.getTime() >= self.timeRanges[1]) {
-          repo.members[issue.user.login].weeks[1].issuescreated++;
-          repo.totals.issuescreated++;
+          repo.members[issue.user.login].weeks[1].issues.created++;
+          repo.members[issue.user.login].weeks[1].issues.items.push({type:'created',label:((issue.labels && issue.labels.length) ? issue.labels[0].name: ''),title:issue.title});
+          repo.totals.issues.created++;
+        }
+      }
+      if(issue.assignee && repo.members[issue.assignee.login]) {
+        var assigned = new Date(issue.created_at)
+        if(assigned.getTime() >= self.timeRanges[0] && created.getTime() < self.timeRanges[1]) {
+          repo.members[issue.assignee.login].weeks[0].issues.assigned++;
+          repo.members[issue.assignee.login].weeks[0].issues.items.push({type:'assigned',title:issue.title});
+          repo.totals.issues.assigned++;
+        } else if(assigned.getTime() >= self.timeRanges[1]) {
+          repo.members[issue.assignee.login].weeks[1].issues.assigned++;
+          repo.members[issue.assignee.login].weeks[1].issues.items.push({type:'assigned',title:issue.title});
+          repo.totals.issues.assigned++;
         }
       }
     });
@@ -200,10 +236,6 @@ Metrics = (function() {
       repo.members = {};
       membersArray.forEach(function(member) {
         repo.members[member.login] = {}
-        repo.members[member.login].weeks = [
-            {date:new Date(),commits:0,issuescreated:0,pullrequests:0,additions:0,deletions:0},
-            {date:new Date(),commits:0,issuescreated:0,pullrequests:0,additions:0,deletions:0}
-        ]
       });
       getStats(repo.name+'/stats/contributors',self.statsCallback.bind(self,repo));
     });
@@ -230,7 +262,7 @@ Metrics = (function() {
 
   Metrics.prototype.statsCallback = function(repo, stats) {
     var self = this, firsttime = true;
-    repo.totals = {commits:0,issuescreated:0,pullrequests:0,additions:0,deletions:0};
+    repo.totals = {commits:0,issues:{created:0,assigned:0,items:[]},pullrequests:0,additions:0,deletions:0};
     stats.forEach(function(stat) {
       var member = stat.author.login
       if(repo.members[member]) {
@@ -239,6 +271,12 @@ Metrics = (function() {
           var time = parseInt(aweek.w+'000');
           if(firsttime) {
             self.timeRanges[i] = self.metricsInput.timeRanges[i] = time;
+          }
+          if(!repo.members[member].weeks) {
+            repo.members[member].weeks = [
+                {date:new Date(),commits:0,issues:{created:0,assigned:0,items:[]},pullrequests:0,additions:0,deletions:0},
+                {date:new Date(),commits:0,issues:{created:0,assigned:0,items:[]},pullrequests:0,additions:0,deletions:0}
+            ]
           }
           repo.members[member].weeks[i].date.setTime(time);
           repo.members[member].weeks[i].commits = parseInt(aweek.c);

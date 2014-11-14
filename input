@@ -54,6 +54,15 @@
     ]
   },
   {
+    "name": "phoenix",
+    "repos": [
+      {
+        "name": "/repos/apache/phoenix",
+        "branch": "master"
+      }
+    ]
+  },
+  {
     "name": "spark",
     "repos": [
       {
