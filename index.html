@@ -53,6 +53,7 @@ function changechart(chart) {
     activechart = chart
     $('#container').fadeOut(400,function(){
       $('#container').highcharts().destroy();
+      $('#container').empty();
       $('#container').highcharts(JSON.parse(charts[activechart]));
       $('#container').highcharts().reflow()
       $('#container').fadeIn(400);
