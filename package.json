@@ -1,0 +1,28 @@
+{
+  "name": "team-metrics",
+  "description": "An npm module which builds team metrics using githapi v3",
+  "tags": [
+    "metrics",
+    "team"
+  ],
+  "version": "0.1.0",
+  "author": {
+    "name": "Kam Kasravi",
+    "email": "kamkasravi@yahoo.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/intel-hadoop/team-metrics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/intel-hadoop/team-metrics/issues"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=0.10.33"
+  },
+  "main": "metrics.js",
+  "dependencies": {
+    "request": ">=2.47.0"
+  }
+}

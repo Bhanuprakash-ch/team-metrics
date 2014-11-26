@@ -1,0 +1,95 @@
+[
+  {
+    "name": "flink",
+    "repos": [
+      {
+        "name": "/repos/apache/incubator-flink",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "gearpump",
+    "repos": [
+      {
+        "name": "/repos/intel-hadoop/gearpump",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Hive",
+    "repos": [
+      {
+        "name": "/repos/apache/hive",
+        "branch": "spark"
+      }
+    ]
+  },
+  {
+    "name": "hbase",
+    "repos": [
+      {
+        "name": "/repos/apache/hbase",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "mahout",
+    "repos": [
+      {
+        "name": "/repos/apache/mahout",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "oryx",
+    "repos": [
+      {
+        "name": "/repos/OryxProject/oryx",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "phoenix",
+    "repos": [
+      {
+        "name": "/repos/apache/phoenix",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "spark",
+    "repos": [
+      {
+        "name": "/repos/apache/spark",
+        "branch": "master"
+      },
+      {
+        "name": "/repos/amplab/tachyon",
+        "branch": "master"
+      },
+      {
+        "name": "/repos/amplab-extras/SparkR-pkg",
+        "branch": "master"
+      }, 
+      {
+        "name": "/repos/intel-hadoop/HiBench",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "storm",
+    "repos": [
+      {
+        "name": "/repos/apache/storm",
+        "branch": "master"
+      }
+    ]
+  }
+]
