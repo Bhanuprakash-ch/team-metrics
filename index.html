@@ -52,8 +52,8 @@ function changechart(chart) {
   if(chart != activechart) {
     activechart = chart
     $('#container').fadeOut(400,function(){
-      $('#container').empty();
       $('#container').highcharts().destroy();
+      //$('#container').empty();
       $('#container').highcharts(JSON.parse(charts[activechart]));
       $('#container').fadeIn(400);
     });
