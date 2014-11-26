@@ -51,7 +51,7 @@ activechart = 0, charts = [];
 
 function changechart(chart) {
   if(chart != activechart) {
-    var container = #container'+activechart
+    var container = '#container'+activechart
     $(container).fadeOut(400,function(){
       $(container).toggle();
       $('#container'+chart).toggle().fadeIn(400);
