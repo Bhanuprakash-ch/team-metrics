@@ -25,7 +25,8 @@
           <h2>Stats for intel-hadoop teams</h2>
         </header>
         <hr>
-        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div id="container0" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div id="container1" style="display: none;min-width: 310px; height: 400px; margin: 0 auto"></div>
         <hr>
         <table id="datatable">
 	<thead>
@@ -50,13 +51,11 @@ activechart = 0, charts = [];
 
 function changechart(chart) {
   if(chart != activechart) {
-    activechart = chart
-    $('#container').fadeOut(400,function(){
-      $('#container').highcharts().destroy();
-      $('#container').empty();
-      $('#container').highcharts(JSON.parse(charts[activechart]));
-      $('#container').highcharts().reflow()
-      $('#container').fadeIn(400);
+    var container = #container'+activechart
+    $(container).fadeOut(400,function(){
+      $(container).toggle();
+      $('#container'+chart).toggle().fadeIn(400);
+      activechart = chart
     });
   }
 }
@@ -66,7 +65,9 @@ var chart1 = '{"chart":{"type":"pie"},"title":{"text":"Commits from Sat Nov 15 2
 
 charts.push(chart0)
 charts.push(chart1)
-$('#container').highcharts(JSON.parse(charts[activechart]));
+charts.forEach(function(chart,i) {
+  $('#container'+i).highcharts(JSON.parse(chart));
+});
 });
 
 </script>
