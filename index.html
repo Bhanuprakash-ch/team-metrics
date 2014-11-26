@@ -35,10 +35,10 @@
 	</thead>
 	<tbody>
 		<tr>
-			<th onclick="changechart(0)">Sat Oct 25 2014 to Fri Nov 07 201</th>
+			<th align="left"><a href="javascript:changechart(0)">Sat Oct 25 2014 to Fri Nov 07 201</a></th>
 		</tr>
 		<tr>
-			<th onclick="changechart(1)">Sat Nov 15 2014 to Fri Nov 28 2014</th>
+			<th align="left"><a href="javascript:changechart(1)">Sat Nov 15 2014 to Fri Nov 28 2014</a></th>
 		</tr>
 	</tbody>
         </table>
@@ -53,6 +53,7 @@ function changechart(chart) {
     activechart = chart
     $('#container').fadeOut(400,function(){
       $('#container').empty();
+      $('#container').highcharts().destroy();
       $('#container').highcharts(JSON.parse(charts[activechart]));
       $('#container').fadeIn(400);
     });
