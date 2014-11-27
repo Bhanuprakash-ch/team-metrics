@@ -52,7 +52,7 @@ activechart = 0, charts = [];
 function changechart(chart) {
   if(chart != activechart) {
     var container = '#container'+activechart
-    var width = window.getComputedStyle(document.getElementById(container)).width
+    var width = window.getComputedStyle(document.getElementById('container'+activechart)).width
     $(container).fadeOut(400,function(){
       document.getElementById('container'+activechart).style.display='none';
       document.getElementById('container'+chart).style.display='block';
