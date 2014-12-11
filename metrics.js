@@ -1,5 +1,6 @@
 #!/usr/local/bin/node
 /*
+GIT
 curl -i 'https://api.github.com/orgs/intel-hadoop/members'
 curl -i 'https://api.github.com/orgs/intel-hadoop/teams'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/issues?since=2014-10-16&state=open'
@@ -7,6 +8,11 @@ curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/commits?since=2014-1
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/pulls?state=closed&direction=asc'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/stats/contributors'
 curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/stats/participation'
+JIRA
+curl -i 'https://issues.apache.org/jira/rest/api/2/search?jql=project%20%3D%20YARN%20AND%20resolution%20in%20(Unresolved%2C%20Fixed)%20AND%20assignee%20in%20(acmurthy)%20'
+curl -i 'https://issues.apache.org/jira/rest/api/2/search?jql=project%20%3D%20HDFS%20AND%20resolution%20in%20(Unresolved%2C%20Fixed)%20AND%20assignee%20in%20(rvadali)%20'
+curl -i 'https://issues.apache.org/jira/rest/api/2/search?jql=resolved%20%3E%3D%20%222014%2F11%2F14%22%20AND%20assignee%20in%20(lirui%2C%20libo-intel%2C%20clockfly%2C%20HuafengWang%2C%20whjiang%2C%20%22jingcheng.du%40intel.com%22%2C%20mauzhang%2C%20%22chengxiang%20li%22%2C%20drankye%2C%20jiajia)'
+'resolved >= "2014/11/14" AND assignee in (lirui, libo-intel, clockfly, HuafengWang, whjiang, "jingcheng.du@intel.com", mauzhang, "chengxiang li", drankye, jiajia'
 */
 function gitapi(user, password, uri, cb) {
   var request = require('request');
@@ -39,7 +45,9 @@ MetricsInput = (function() {
     this.program = process.argv[1];
     this.teams = [];
     this.team = null;
-    this.timeRanges = Array(2);
+    this.howManyWeeks = 2;
+    this.oneDay = 24*60*60*1000;
+    this.timeRanges = Array(this.howManyWeeks);
     this.generateGraph = this.generateGraph.bind(this);
     this.inputCallback = this.inputCallback.bind(this);
     this.usage = this.usage.bind(this);
@@ -58,6 +66,9 @@ MetricsInput = (function() {
         case "-t":
           self.team = options[i+1];
           break;
+        case "-w":
+          self.howManyWeeks = options[i+1];
+          break;
         default:
           break;
       }
@@ -73,15 +84,14 @@ MetricsInput = (function() {
 
   MetricsInput.prototype.generateGraph = function () {
     var self = this;
-    var oneDay = 24*60*60*1000;
-    var twoWeeks = (this.timeRanges[1]-this.timeRanges[0])*2-oneDay;
+    var howManyDays = self.oneDay*7*self.howManyWeeks-self.oneDay
     var commits = {
       chart: {
         type:'pie'
       },
       title: {
         text: 'Commits from '+new Date(this.timeRanges[0]).toDateString()+' to '+
-          new Date(this.timeRanges[0]+twoWeeks).toDateString()
+          new Date(this.timeRanges[0]+howManyDays).toDateString()
       },
       xAxis: {
         type: 'category',
@@ -167,8 +177,10 @@ Metrics = (function() {
     this.team = team;
     this.metricsInput = metricsInput;
     this.repoMap = {};
-    this.timeRanges = Array(2);
+    this.timeRanges = Array(this.metricsInput.howManyWeeks);
+    this.createMembersWeeks = this.createMembersWeeks.bind(this);
     this.generateReport = this.generateReport.bind(this);
+    this.getWeekIndex = this.getWeekIndex.bind(this);
     this.issuesCallback = this.issuesCallback.bind(this);
     this.membersCallback = this.membersCallback.bind(this);
     this.pullRequestCallback = this.pullRequestCallback.bind(this);
@@ -184,7 +196,7 @@ Metrics = (function() {
       if(repo.members[member].weeks && repo.members[member].weeks.length) {
         console.log('    '+member);
         repo.members[member].weeks.forEach(function(week) {
-          console.log('      week of '+week.date.toDateString()+' commits:'+week.commits+' issues (created:'+week.issues.created+', assigned:'+week.issues.assigned+') pullrequests:'+week.pullrequests+' additions:'+week.additions+' deletions:'+week.deletions);
+          console.log('      week of '+week.date.toDateString()+' commits:'+week.commits+' issues (created/modified:'+week.issues.created+', assigned:'+week.issues.assigned+') pullrequests:'+week.pullrequests+' additions:'+week.additions+' deletions:'+week.deletions);
           if(week.issues.items && week.issues.items.length) {
             console.log('        issues:');
             week.issues.items.forEach(function(issue) {
@@ -194,36 +206,33 @@ Metrics = (function() {
         });
       }
     }
-    console.log('  commits:'+repo.totals.commits+' issues (created:'+repo.totals.issues.created+', assigned:'+repo.totals.issues.assigned+') pullrequests:'+repo.totals.pullrequests+' additions:'+repo.totals.additions+' deletions:'+repo.totals.deletions+'\n');
+    console.log('  commits:'+repo.totals.commits+' issues (created/modified:'+repo.totals.issues.created+', assigned:'+repo.totals.issues.assigned+') pullrequests:'+repo.totals.pullrequests+' additions:'+repo.totals.additions+' deletions:'+repo.totals.deletions+'\n');
+  }
+
+  Metrics.prototype.getWeekIndex = function (time) {
+    var self=this;
+    var weekIndex = Math.floor((time - self.timeRanges[0])/(self.metricsInput.oneDay*7))
+    return weekIndex < 0 ? 0 : weekIndex;
   }
 
   Metrics.prototype.issuesCallback = function (repo, issues) {
-    var self = this;
+    var self = this, weekIndex;
     issues = issues.filter(function(issue){return issue.pull_request?false:true;});
     issues.forEach(function(issue) {
       if(repo.members[issue.user.login]) {
         var created = new Date(issue.created_at)
-        if(created.getTime() >= self.timeRanges[0] && created.getTime() < self.timeRanges[1]) {
-          repo.members[issue.user.login].weeks[0].issues.created++;
-          repo.members[issue.user.login].weeks[0].issues.items.push({type:'created',label:((issue.labels && issue.labels.length) ? issue.labels[0].name: ''),title:issue.title});
-          repo.totals.issues.created++;
-        } else if(created.getTime() >= self.timeRanges[1]) {
-          repo.members[issue.user.login].weeks[1].issues.created++;
-          repo.members[issue.user.login].weeks[1].issues.items.push({type:'created',label:((issue.labels && issue.labels.length) ? issue.labels[0].name: ''),title:issue.title});
-          repo.totals.issues.created++;
-        }
+        weekIndex = self.getWeekIndex(created.getTime());
+        self.createMembersWeeks(repo, issue.user.login);
+        repo.members[issue.user.login].weeks[weekIndex].issues.created++;
+        repo.members[issue.user.login].weeks[weekIndex].issues.items.push({type:'created/modified',label:((issue.labels && issue.labels.length) ? issue.labels[0].name: ''),title:issue.title});
+        repo.totals.issues.created++;
       }
       if(issue.assignee && repo.members[issue.assignee.login]) {
         var assigned = new Date(issue.created_at)
-        if(assigned.getTime() >= self.timeRanges[0] && created.getTime() < self.timeRanges[1]) {
-          repo.members[issue.assignee.login].weeks[0].issues.assigned++;
-          repo.members[issue.assignee.login].weeks[0].issues.items.push({type:'assigned',title:issue.title});
-          repo.totals.issues.assigned++;
-        } else if(assigned.getTime() >= self.timeRanges[1]) {
-          repo.members[issue.assignee.login].weeks[1].issues.assigned++;
-          repo.members[issue.assignee.login].weeks[1].issues.items.push({type:'assigned',title:issue.title});
-          repo.totals.issues.assigned++;
-        }
+        weekIndex = self.getWeekIndex(assigned.getTime());
+        repo.members[issue.assignee.login].weeks[weekIndex].issues.assigned++;
+        repo.members[issue.assignee.login].weeks[weekIndex].issues.items.push({type:'assigned',title:issue.title});
+        repo.totals.issues.assigned++;
       }
     });
     this.generateReport(repo)
@@ -247,37 +256,38 @@ Metrics = (function() {
       if(repo.members[pull.user.login]) {
         var created = new Date(pull.created_at)
         var closed = new Date(pull.closed_at)
-        if(closed.getTime() >= self.timeRanges[0] && closed.getTime() < self.timeRanges[1]) {
-          repo.members[pull.user.login].weeks[0].pullrequests++;
-          repo.totals.pullrequests++;
-        } else if(closed.getTime() >= self.timeRanges[1]) {
-          repo.members[pull.user.login].weeks[1].pullrequests++;
-          repo.totals.pullrequests++;
-        }
+        var weekIndex = self.getWeekIndex(closed.getTime());
+        self.createMembersWeeks(repo, pull.user.login);
+        repo.members[pull.user.login].weeks[weekIndex].pullrequests++;
+        repo.totals.pullrequests++;
       }
     });
     isNaN(this.timeRanges[0]) ||
     getIssues(repo.name, new Date(this.timeRanges[0]).toISOString(),this.issuesCallback.bind(this,repo));
   }
 
+  Metrics.prototype.createMembersWeeks = function(repo, member) {
+    var self = this;
+    if(!repo.members[member].weeks) {
+      repo.members[member].weeks = [];
+      for(var j=0; j < self.metricsInput.howManyWeeks; j++) {
+        repo.members[member].weeks.push({date:new Date(),commits:0,issues:{created:0,assigned:0,items:[]},pullrequests:0,additions:0,deletions:0})
+      }
+    }
+  }
   Metrics.prototype.statsCallback = function(repo, stats) {
     var self = this, firsttime = true;
     repo.totals = {commits:0,issues:{created:0,assigned:0,items:[]},pullrequests:0,additions:0,deletions:0};
     stats.forEach(function(stat) {
       var member = stat.author.login
       if(repo.members[member]) {
-        var weeks = stat.weeks.slice(-2)
+        var weeks = stat.weeks.slice(-self.metricsInput.howManyWeeks)
         weeks.forEach(function(aweek,i) {
           var time = parseInt(aweek.w+'000');
           if(firsttime) {
             self.timeRanges[i] = self.metricsInput.timeRanges[i] = time;
           }
-          if(!repo.members[member].weeks) {
-            repo.members[member].weeks = [
-                {date:new Date(),commits:0,issues:{created:0,assigned:0,items:[]},pullrequests:0,additions:0,deletions:0},
-                {date:new Date(),commits:0,issues:{created:0,assigned:0,items:[]},pullrequests:0,additions:0,deletions:0}
-            ]
-          }
+          self.createMembersWeeks(repo, member);
           repo.members[member].weeks[i].date.setTime(time);
           repo.members[member].weeks[i].commits = parseInt(aweek.c);
           repo.members[member].weeks[i].additions = parseInt(aweek.a);
