@@ -1,93 +1,540 @@
 [
   {
-    "name": "flink",
+    "name": "Admins",
     "repos": [
       {
-        "name": "/repos/apache/incubator-flink",
+        "name": "/repos/trustedanalytics/platform-parent",
         "branch": "master"
       }
     ]
   },
   {
-    "name": "gearpump",
+    "name": "file-server",
     "repos": [
       {
-        "name": "/repos/intel-hadoop/gearpump",
+        "name": "/repos/trustedanalytics/file-server",
         "branch": "master"
       }
     ]
   },
   {
-    "name": "Hive",
+    "name": "Admins",
     "repos": [
       {
-        "name": "/repos/apache/hive",
-        "branch": "spark"
-      }
-    ]
-  },
-  {
-    "name": "hbase",
-    "repos": [
-      {
-        "name": "/repos/apache/hbase",
+        "name": "/repos/trustedanalytics/platform-appstack",
         "branch": "master"
       }
     ]
   },
   {
-    "name": "mahout",
+    "name": "Admins",
     "repos": [
       {
-        "name": "/repos/apache/mahout",
+        "name": "/repos/trustedanalytics/atk",
         "branch": "master"
       }
     ]
   },
   {
-    "name": "oryx",
+    "name": "Admins",
     "repos": [
       {
-        "name": "/repos/OryxProject/oryx",
+        "name": "/repos/trustedanalytics/terraform-aws-intel",
         "branch": "master"
       }
     ]
   },
   {
-    "name": "phoenix",
+    "name": "Admins",
     "repos": [
       {
-        "name": "/repos/apache/phoenix",
+        "name": "/repos/trustedanalytics/platform-ansible",
         "branch": "master"
       }
     ]
   },
   {
-    "name": "spark",
+    "name": "Admins",
     "repos": [
       {
-        "name": "/repos/apache/spark",
-        "branch": "master"
-      },
-      {
-        "name": "/repos/amplab/tachyon",
-        "branch": "master"
-      },
-      {
-        "name": "/repos/amplab-extras/SparkR-pkg",
-        "branch": "master"
-      }, 
-      {
-        "name": "/repos/intel-hadoop/HiBench",
+        "name": "/repos/trustedanalytics/terraform-aws-cdh",
         "branch": "master"
       }
     ]
   },
   {
-    "name": "storm",
+    "name": "Admins",
     "repos": [
       {
-        "name": "/repos/apache/storm",
+        "name": "/repos/trustedanalytics/cf-boshworkspace",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-aws-cf-install",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/hbase-broker",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/yarn-broker",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/data-acquisition",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/console",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/platform-wiki",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/dataset-reader-sample",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/project-template",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/spring-project-template",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/dataset-publisher",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/metrics-provider",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/traveling-cf-admin",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-openstack-cf-install",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-openstack-cdh",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-openstack-intel",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/metastore-refresh-service",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/logsearch-boshworkspace",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/docker-services-boshworkspace",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-openstack-consul",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-aws-consul",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/cloudfoundry-mkappstack",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/cf-platform-openstack",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/hdfs-broker",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/broker-store",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/ingestion-ws-kafka-hdfs",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/gateway",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/space-shuttle-demo",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/uaa",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/resource-server-template",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/uploader",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/metadata-parser",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/cf-client",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/atk-buildpack",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/app-launching-service-broker",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/trustedanalytics-cloud-parent",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/mqtt-demo",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-aws-vpc",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/zookeeper-broker",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/user-management",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/service-catalog",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "router-metrics-provider",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/router-metrics-provider",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/object-store",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/platform-context",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/hadoop-utils",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/hadoop-spring-utils",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/hadoop-admin-tools",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/downloader",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/data-catalog",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/app-launcher-helper",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/uaa-intel-boshrelease",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/terraform-aws-cf-net",
+        "branch": "master"
+      }
+    ]
+  },
+  {
+    "name": "Admins",
+    "repos": [
+      {
+        "name": "/repos/trustedanalytics/iot-haproxy-boshrelease",
         "branch": "master"
       }
     ]

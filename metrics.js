@@ -1,13 +1,13 @@
-#!/usr/local/bin/node
+#!/usr/bin/node
 /*
 GIT
-curl -i 'https://api.github.com/orgs/intel-hadoop/members'
-curl -i 'https://api.github.com/orgs/intel-hadoop/teams'
-curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/issues?since=2014-10-16&state=open'
-curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/commits?since=2014-10-16&until=2014-10-31'
-curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/pulls?state=closed&direction=asc'
-curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/stats/contributors'
-curl -i 'https://api.github.com/repos/intel-hadoop/gearpump/stats/participation'
+curl -i 'https://api.github.com/orgs/trustedanalytics/members'
+curl -i 'https://api.github.com/orgs/trustedanalytics/teams'
+curl -i 'https://api.github.com/repos/trustedanalytics/gearpump/issues?since=2014-10-16&state=open'
+curl -i 'https://api.github.com/repos/trustedanalytics/gearpump/commits?since=2014-10-16&until=2014-10-31'
+curl -i 'https://api.github.com/repos/trustedanalytics/gearpump/pulls?state=closed&direction=asc'
+curl -i 'https://api.github.com/repos/trustedanalytics/gearpump/stats/contributors'
+curl -i 'https://api.github.com/repos/trustedanalytics/gearpump/stats/participation'
 JIRA
 curl -i 'https://issues.apache.org/jira/rest/api/2/search?jql=project%20%3D%20YARN%20AND%20resolution%20in%20(Unresolved%2C%20Fixed)%20AND%20assignee%20in%20(acmurthy)%20'
 curl -i 'https://issues.apache.org/jira/rest/api/2/search?jql=project%20%3D%20HDFS%20AND%20resolution%20in%20(Unresolved%2C%20Fixed)%20AND%20assignee%20in%20(rvadali)%20'
@@ -332,7 +332,7 @@ function getTeam(team, teamcallback) {
       return false;
     })
   }
-  gitapi('/orgs/intel-hadoop/teams',teamsCallback.bind(undefined,team,teamcallback));
+  gitapi('/orgs/trustedanalytics/teams',teamsCallback.bind(undefined,team,teamcallback));
 }
 
 function getStats(repo, statscallback) {
