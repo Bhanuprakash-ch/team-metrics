@@ -1,0 +1,1 @@
+{"name":"Team-metrics","tagline":"Calculates stats for intel-hadoop teams","body":"Project to calculate team metrics using github API v3. Will also use JIRA's api to pick up additional metrics.","google":"","note":"Don't delete this file! It's used internally to help with page regeneration."}

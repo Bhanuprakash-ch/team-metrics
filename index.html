@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <script type='text/javascript' src='https://code.jquery.com/jquery-1.9.1.js'></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/data.js"></script>
+    <script src="http://code.highcharts.com/modules/drilldown.js"></script>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Team-metrics for trustedanalytics</title>
+  </head>
+
+  <body>
+    <div id="main">
+      <div class="inner">
+        <header>
+          <h1>Team-metrics</h1>
+          <h2>Stats for trustedanalytics teams</h2>
+        </header>
+        <hr>
+        <div id="container0" class="highChart" style="width:90%;display: none;min-width: 910px; height: 400px; margin: 0 auto"></div>
+        <div id="container1" class="highChart" style="width:90%;min-width: 910px; height: 400px; margin: 0 auto;display: none;"></div>
+        <hr>
+        <table id="datatable">
+	<thead>
+		<tr>
+			<th>Team Metrics</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th align="left"><a href="javascript:changechart(0)">Workweek 35</a></th>
+		</tr>
+	</tbody>
+        </table>
+      </div>
+    </div>
+<script>
+
+activechart = 0, charts = [];
+
+function changechart(chart) {
+ // if(chart != activechart) {
+    $(".highChart").hide();
+    var container = '#container'+activechart
+    var width = window.getComputedStyle(document.getElementById('container'+activechart)).width
+    $(container).fadeOut(400,function(){
+      document.getElementById('container'+activechart).style.display='none';
+      document.getElementById('container'+chart).style.display='block';
+      document.getElementById('container'+chart).style.width=width;
+      $('#container'+chart).fadeIn(400);
+      activechart = chart
+    });
+  //}
+}
+$(function () {
+        var chart0 = '{"chart":{"type":"pie"},"title":{"text":"Commits workweek 35"},"xAxis":{"type":"category","showEmpty":false},"yAxis":{"showEmpty":false},"legend":{"showEmpty":false},"plotOptions":{"series":{"borderWidth":0,"dataLabels":{"enabled":true}}},"series":[{"name":"Commits","colorByPoint":true,"data":[{"name":"platform-parent","y":6,"drilldown":"platform-parent_members"},{"name":"platform-appstack","y":0,"drilldown":"platform-appstack_members"},{"name":"atk","y":0,"drilldown":"atk_members"},{"name":"terraform-aws-intel","y":0,"drilldown":"terraform-aws-intel_members"},{"name":"platform-ansible","y":0,"drilldown":"platform-ansible_members"},{"name":"terraform-aws-cdh","y":0,"drilldown":"terraform-aws-cdh_members"},{"name":"cf-boshworkspace","y":0,"drilldown":"cf-boshworkspace_members"},{"name":"terraform-aws-cf-install","y":0,"drilldown":"terraform-aws-cf-install_members"},{"name":"hbase-broker","y":1,"drilldown":"hbase-broker_members"},{"name":"yarn-broker","y":1,"drilldown":"yarn-broker_members"},{"name":"data-acquisition","y":1,"drilldown":"data-acquisition_members"},{"name":"console","y":0,"drilldown":"console_members"},{"name":"platform-wiki","y":0,"drilldown":"platform-wiki_members"},{"name":"dataset-reader-sample","y":0,"drilldown":"dataset-reader-sample_members"},{"name":"project-template","y":0,"drilldown":"project-template_members"},{"name":"spring-project-template","y":0,"drilldown":"spring-project-template_members"},{"name":"dataset-publisher","y":0,"drilldown":"dataset-publisher_members"},{"name":"metrics-provider","y":0,"drilldown":"metrics-provider_members"},{"name":"traveling-cf-admin","y":0,"drilldown":"traveling-cf-admin_members"},{"name":"terraform-openstack-cf-install","y":0,"drilldown":"terraform-openstack-cf-install_members"},{"name":"terraform-openstack-cdh","y":0,"drilldown":"terraform-openstack-cdh_members"},{"name":"terraform-openstack-intel","y":0,"drilldown":"terraform-openstack-intel_members"},{"name":"metastore-refresh-service","y":0,"drilldown":"metastore-refresh-service_members"},{"name":"logsearch-boshworkspace","y":0,"drilldown":"logsearch-boshworkspace_members"},{"name":"docker-services-boshworkspace","y":0,"drilldown":"docker-services-boshworkspace_members"},{"name":"terraform-openstack-consul","y":0,"drilldown":"terraform-openstack-consul_members"},{"name":"terraform-aws-consul","y":0,"drilldown":"terraform-aws-consul_members"},{"name":"cloudfoundry-mkappstack","y":0,"drilldown":"cloudfoundry-mkappstack_members"},{"name":"cf-platform-openstack","y":0,"drilldown":"cf-platform-openstack_members"},{"name":"hdfs-broker","y":0,"drilldown":"hdfs-broker_members"},{"name":"broker-store","y":0,"drilldown":"broker-store_members"},{"name":"ingestion-ws-kafka-hdfs","y":0,"drilldown":"ingestion-ws-kafka-hdfs_members"},{"name":"gateway","y":0,"drilldown":"gateway_members"},{"name":"space-shuttle-demo","y":0,"drilldown":"space-shuttle-demo_members"},{"name":"uaa","y":0,"drilldown":"uaa_members"},{"name":"resource-server-template","y":0,"drilldown":"resource-server-template_members"},{"name":"uploader","y":0,"drilldown":"uploader_members"},{"name":"metadata-parser","y":0,"drilldown":"metadata-parser_members"},{"name":"cf-client","y":0,"drilldown":"cf-client_members"},{"name":"atk-buildpack","y":0,"drilldown":"atk-buildpack_members"},{"name":"app-launching-service-broker","y":0,"drilldown":"app-launching-service-broker_members"},{"name":"trustedanalytics-cloud-parent","y":0,"drilldown":"trustedanalytics-cloud-parent_members"},{"name":"mqtt-demo","y":0,"drilldown":"mqtt-demo_members"},{"name":"terraform-aws-vpc","y":0,"drilldown":"terraform-aws-vpc_members"},{"name":"zookeeper-broker","y":0,"drilldown":"zookeeper-broker_members"},{"name":"user-management","y":0,"drilldown":"user-management_members"},{"name":"service-catalog","y":0,"drilldown":"service-catalog_members"},{"name":"object-store","y":0,"drilldown":"object-store_members"},{"name":"platform-context","y":0,"drilldown":"platform-context_members"},{"name":"hadoop-utils","y":0,"drilldown":"hadoop-utils_members"},{"name":"hadoop-spring-utils","y":0,"drilldown":"hadoop-spring-utils_members"},{"name":"hadoop-admin-tools","y":0,"drilldown":"hadoop-admin-tools_members"},{"name":"downloader","y":0,"drilldown":"downloader_members"},{"name":"data-catalog","y":0,"drilldown":"data-catalog_members"},{"name":"app-launcher-helper","y":0,"drilldown":"app-launcher-helper_members"},{"name":"uaa-intel-boshrelease","y":0,"drilldown":"uaa-intel-boshrelease_members"},{"name":"terraform-aws-cf-net","y":0,"drilldown":"terraform-aws-cf-net_members"},{"name":"iot-haproxy-boshrelease","y":0,"drilldown":"iot-haproxy-boshrelease_members"}],"type":"column"}],"drilldown":{"series":[{"id":"platform-parent_members","data":[["akdajnowski",5],["kkonradI",0],["mbultrow",1],["rbiegacz",0]]},{"id":"platform-appstack_members","data":[["kkonradI",0],["rbiegacz",0]]},{"id":"atk_members","data":[]},{"id":"terraform-aws-intel_members","data":[["kkonradI",0]]},{"id":"platform-ansible_members","data":[["kkonradI",0],["wkielas",0]]},{"id":"terraform-aws-cdh_members","data":[["kkonradI",0],["wkielas",0]]},{"id":"cf-boshworkspace_members","data":[]},{"id":"terraform-aws-cf-install_members","data":[]},{"id":"hbase-broker_members","data":[["akdajnowski",1]]},{"id":"yarn-broker_members","data":[["akdajnowski",1]]},{"id":"data-acquisition_members","data":[["akdajnowski",1]]},{"id":"console_members","data":[]},{"id":"platform-wiki_members","data":[]},{"id":"dataset-reader-sample_members","data":[]},{"id":"project-template_members","data":[["kkonradI",0]]},{"id":"spring-project-template_members","data":[]},{"id":"dataset-publisher_members","data":[["kkonradI",0]]},{"id":"metrics-provider_members","data":[["kkonradI",0]]},{"id":"traveling-cf-admin_members","data":[]},{"id":"terraform-openstack-cf-install_members","data":[["mstrzele",0]]},{"id":"terraform-openstack-cdh_members","data":[["kkonradI",0],["wkielas",0]]},{"id":"terraform-openstack-intel_members","data":[["kkonradI",0],["mstrzele",0]]},{"id":"metastore-refresh-service_members","data":[["kkonradI",0]]},{"id":"logsearch-boshworkspace_members","data":[]},{"id":"docker-services-boshworkspace_members","data":[["wkielas",0]]},{"id":"terraform-openstack-consul_members","data":[["kkonradI",0],["wkielas",0]]},{"id":"terraform-aws-consul_members","data":[["kkonradI",0],["wkielas",0]]},{"id":"cloudfoundry-mkappstack_members","data":[["kkonradI",0]]},{"id":"cf-platform-openstack_members","data":[["kkonradI",0]]},{"id":"hdfs-broker_members","data":[["mbultrow",0]]},{"id":"broker-store_members","data":[["mbultrow",0]]},{"id":"ingestion-ws-kafka-hdfs_members","data":[]},{"id":"gateway_members","data":[]},{"id":"space-shuttle-demo_members","data":[["kkonradI",0]]},{"id":"uaa_members","data":[]},{"id":"resource-server-template_members","data":[]},{"id":"uploader_members","data":[["kkonradI",0]]},{"id":"metadata-parser_members","data":[]},{"id":"cf-client_members","data":[["jrozestw",0]]},{"id":"atk-buildpack_members","data":[]},{"id":"app-launching-service-broker_members","data":[]},{"id":"trustedanalytics-cloud-parent_members","data":[["kkonradI",0]]},{"id":"mqtt-demo_members","data":[["kkonradI",0]]},{"id":"terraform-aws-vpc_members","data":[]},{"id":"zookeeper-broker_members","data":[]},{"id":"user-management_members","data":[]},{"id":"service-catalog_members","data":[]},{"id":"object-store_members","data":[["jrozansk",0]]},{"id":"platform-context_members","data":[]},{"id":"hadoop-utils_members","data":[]},{"id":"hadoop-spring-utils_members","data":[["kkonradI",0]]},{"id":"hadoop-admin-tools_members","data":[]},{"id":"downloader_members","data":[["kkonradI",0]]},{"id":"data-catalog_members","data":[["mbultrow",0]]},{"id":"app-launcher-helper_members","data":[]},{"id":"uaa-intel-boshrelease_members","data":[]},{"id":"terraform-aws-cf-net_members","data":[]},{"id":"iot-haproxy-boshrelease_members","data":[]}]}}'
+
+        
+charts.push(chart0)
+charts.forEach(function(chart,i) {
+  $('#container'+i).highcharts(JSON.parse(chart));
+});
+
+javascript:changechart(0);
+$(window).resize();
+});
+
+</script>
+  </body>
+</html>
