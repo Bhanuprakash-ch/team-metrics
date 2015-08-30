@@ -4,3 +4,27 @@ team-metrics
 ============
 
 Uses nodejs and github-api v3 to fetch metrics.
+
+## Usage:
+
+``` npm install ``` - install all modules for metrics
+
+in command line use ./metrics.js -u {github user} -p {token or password} -w {how many weeks you want to search back} [input]
+
+## Input file:
+
+You need to edit input file for getting statistics. There is an example how you can do that:
+
+```
+{
+    "name": "{team name from project projects i.e Owners}",
+    "repos": [
+    {
+        "name": "/repos/{name of organisation}/{name of project}",
+        "branch": "master"
+    }
+    ]
+}
+```
+
+

@@ -9,7 +9,7 @@
     ]
   },
   {
-    "name": "file-server",
+    "name": "Admins",
     "repos": [
       {
         "name": "/repos/trustedanalytics/file-server",
